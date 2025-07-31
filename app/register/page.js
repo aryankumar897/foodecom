@@ -41,6 +41,8 @@ import {
 
 import Link from "next/link";
 const RegisterPage = () => {
+
+
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -66,6 +68,8 @@ const RegisterPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
+
+
 
     // Basic validation
     if (formData.password !== formData.confirmPassword) {

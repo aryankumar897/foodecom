@@ -1,5 +1,3 @@
-
-
 // // Database connection string for MongoDB (local instance)
 // const DB_URI = "mongodb://127.0.0.1:27017/restorent"; // Connects to a local MongoDB instance on port 27017
 
@@ -21,17 +19,15 @@
 // const NEXTAUTH_SECRET = "YGHIUGH78YT845U7YTH45IU796YH4658"; // ⚠️ Must be kept secret, used for session encryption
 
 // // Google OAuth credentials for authentication
-// const GOOGLE_CLIENT_ID = "201676020129-oijeeo9b6j6pm1p74q9bkp5n6q7tm9lc.apps.googleusercontent.com"; 
+// const GOOGLE_CLIENT_ID = "201676020129-oijeeo9b6j6pm1p74q9bkp5n6q7tm9lc.apps.googleusercontent.com";
 // const GOOGLE_CLIENT_SECRET = "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"; // ⚠️ Must be kept secret
 
-
 // // Razorpay API keys for handling payments
-
 
 // const RAZORPAY_KEY_ID = "rzp_test_579nrQLWfYBIYD";
 // const RAZORPAY_KEY_SECRET = "BHRRlgPRkOn70429Yz9ffxjD";
 // // PayPal API keys for handling payments
-// const PAYPAL_CLIENT_ID = "AWFzSsbK-t-cIR6tesNg0-T4X1iJzRC8f3DEl_F_zBu8zCK_EYVfV-MpIabxdcDjGue9OVGx4JdqP5Sa"; 
+// const PAYPAL_CLIENT_ID = "AWFzSsbK-t-cIR6tesNg0-T4X1iJzRC8f3DEl_F_zBu8zCK_EYVfV-MpIabxdcDjGue9OVGx4JdqP5Sa";
 // const PAYPAL_CLIENT_SECRET = "EAgttqS6ir0zGY7sRcSgzhaw-xxatmRLYq4WvyFZtGlHh59I9iArNCfvCG-cDWzlvfUSYi4cocZ0LN1A"; // ⚠️ Must be kept secret
 
 // // Exporting all configurations as a module
@@ -46,43 +42,12 @@
 //   CLIENT_URL,
 //   GOOGLE_CLIENT_ID,
 //   GOOGLE_CLIENT_SECRET,
- 
+
 //   PAYPAL_CLIENT_ID,
 //   PAYPAL_CLIENT_SECRET,
 //   RAZORPAY_KEY_SECRET,
 //   RAZORPAY_KEY_ID,
 // };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // // const DB_URI = "mongodb://127.0.0.1:27017/lms";
 
@@ -115,9 +80,6 @@
 // // PAYPAL_CLIENT_ID="AWFzSsbK-t-cIR6tesNg0-T4X1iJzRC8f3DEl_F_zBu8zCK_EYVfV-MpIabxdcDjGue9OVGx4JdqP5Sa"
 // // PAYPAL_CLIENT_SECRET="EAgttqS6ir0zGY7sRcSgzhaw-xxatmRLYq4WvyFZtGlHh59I9iArNCfvCG-cDWzlvfUSYi4cocZ0LN1A"
 
-
-
-
 // // module.exports = {
 // //   DB_URI,
 // //   API,
@@ -140,22 +102,9 @@
 // //   RAZORPAY_KEY_SECRET,
 // //   RAZORPAY_KEY_ID ,
 
-
-
-
 // // };
 
-
-
-
-
-
-
-
-
-
-
-require('dotenv').config();
+require("dotenv").config();
 
 // Database connection string for MongoDB (local instance)
 const DB_URI = process.env.DB_URI;
@@ -189,6 +138,11 @@ const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
 
+const APP_ID = process.env.APP_ID;
+const KEY = process.env.KEY;
+const SECRET = process.env.SECRET;
+const CLUSTER = process.env.CLUSTER;
+
 // Exporting all configurations as a module
 module.exports = {
   DB_URI,
@@ -205,10 +159,9 @@ module.exports = {
   PAYPAL_CLIENT_SECRET,
   RAZORPAY_KEY_SECRET,
   RAZORPAY_KEY_ID,
+
+  APP_ID,
+  KEY,
+  SECRET,
+  CLUSTER,
 };
-
-
-
-
-
-

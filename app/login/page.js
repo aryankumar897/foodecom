@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+
+
 import {
   Typography,
   TextField,
@@ -13,6 +15,8 @@ import {
   FormControlLabel,
   Box,
 } from "@mui/material";
+
+
 import {
   Email as EmailIcon,
   Lock as LockIcon,
@@ -60,18 +64,17 @@ const LoginPage = () => {
         redirect: false,
         email,
         password,
+       
       });
 
       if (result?.error) {
-        alert(result.error);
-        toast.error(result?.error);
-        setError(result.error || "Login failed");
-      } else {
-        // Login successful - redirect to home page or intended page
-        toast.success("login successful");
-        // On successful login
-        router.push("/");
-      }
+      toast.error(result.error);
+      setError(result.error || "Login failed");
+    } else {
+      toast.success("Login successful");
+      // Use result.url or the default "/"
+      router.push(result?.url || "/");
+    }
     } catch (err) {
       setError("Invalid email or password. Please try again.");
     } finally {
@@ -279,6 +282,7 @@ const LoginPage = () => {
               <Box display="flex" justifyContent="center" mt={2}>
                 <SocialButtonsContainer>
                   <GoogleButton
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
                     variant="contained"
                     startIcon={<Google />}
                     fullWidth

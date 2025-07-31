@@ -29,6 +29,11 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 
+
+
+
+
+
 const Nav = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -39,31 +44,8 @@ const Nav = () => {
   const { data: session } = useSession();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
- const cartCount = useSelector((state) => state.cart.items?.length || 0);
 
-// const [cartItems, setCartItems] = useState([]);
-
-//   const fetchCart = async () => {
-//     const res = await fetch(`${process.env.API}/user/add-to-cart`);
-//     const data = await res.json();
-//     setCartItems(data);
-//   };
-
-//   useEffect(() => {
-//     fetchCart(); // Load initially
-
-//     // Listen for localStorage changes (cross-component)
-//     const handleStorage = (event) => {
-//       if (event.key === "cartUpdated") {
-//         fetchCart(); // Refetch when cart is updated
-//       }
-//     };
-
-//     window.addEventListener("storage", handleStorage);
-
-//     return () => window.removeEventListener("storage", handleStorage);
-//   }, []);
-
+  const cartCount = useSelector((state) => state.cart.items?.length || 0);
 
   const handleAuthIconClick = () => {
     if (session && session?.user) {
@@ -209,18 +191,18 @@ const Nav = () => {
                 <MenuIcon />
               </IconButton>
             )}
-           <Typography
-      variant="h6"
-      onClick={() => router.push('/')}
-      sx={{
-        color: "black",
-        fontSize: isSmallScreen ? "1.2rem" : "1.5rem",
-        fontWeight: "bold",
-        cursor: "pointer", // Makes it obvious it's clickable
-      }}
-    >
-      Food Hub
-    </Typography>
+          <Typography
+            variant="h6"
+            onClick={() => router.push("/")}
+            sx={{
+              color: "black",
+              fontSize: isSmallScreen ? "1.2rem" : "1.5rem",
+              fontWeight: "bold",
+              cursor: "pointer", // Makes it obvious it's clickable
+            }}
+          >
+            Food Hub
+          </Typography>
         </Box>
 
         {/* Desktop Menu */}
@@ -241,10 +223,13 @@ const Nav = () => {
           <IconButton
             onClick={toggleCartDrawer(true)}
             sx={{
-              backgroundColor: "#e60000",
-              color: "white",
+              color: "red",
               marginRight: "0.5rem",
-              "&:hover": { backgroundColor: "#e60000" },
+              "&:hover": {
+                backgroundColor: "#e60000",
+
+                color: "white",
+              },
             }}
           >
             <Badge
@@ -267,10 +252,9 @@ const Nav = () => {
 
           <IconButton
             sx={{
-              backgroundColor: "#e60000",
-              color: "white",
+              color: "red",
               marginRight: "0.5rem",
-              "&:hover": { backgroundColor: "#e60000" },
+              "&:hover": { backgroundColor: "#e60000", color: "white" },
             }}
           >
             <CompareIcon fontSize={isSmallScreen ? "small" : "medium"} />
@@ -278,10 +262,9 @@ const Nav = () => {
           <IconButton
             onClick={handleAuthIconClick}
             sx={{
-              backgroundColor: "#e60000",
-              color: "white",
+              color: "red",
               marginRight: isSmallScreen ? 0 : "0.5rem",
-              "&:hover": { backgroundColor: "#e60000" },
+              "&:hover": { backgroundColor: "#e60000", color: "white" },
             }}
           >
             {session?.user ? (
@@ -301,6 +284,9 @@ const Nav = () => {
               <LoginIcon fontSize={isSmallScreen ? "small" : "medium"} />
             )}
           </IconButton>
+
+       
+
           <Button
             variant="contained"
             onClick={handleReservationOpen}

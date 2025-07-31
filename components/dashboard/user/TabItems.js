@@ -24,6 +24,12 @@ export const tabItems = [
   { icon: <ReviewsIcon />, label: "Reviews", value: 6, path: "/dashboard/user/reviews" },
   { icon: <WishlistIcon />, label: "Wishlist", value: 7, path: "/dashboard/user/wishlist" },
   { icon: <AddressIcon />, label: "Addresses", value: 8, path: "/dashboard/user/addresses" },
+{ icon: <AddressIcon />, label: "LogOut", value: 9, path: "/dashboard/user/logout" },
+
+
+
+
+
 ];
 
 export const CustomTab = ({ item, value, handleChange }) => {

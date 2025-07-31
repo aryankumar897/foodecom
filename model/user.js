@@ -57,6 +57,16 @@ const UserSchema = new mongoose.Schema(
       // Sets the default value for this field to 'user' if no value is provided.
       required: true,
     },
+
+      resetCode: {
+        data: String,
+        expiresAt: {
+            type: Date,
+            default: () => new Date(Date.now() + 10 * 60 * 1000), // 10
+           // minutes in milliseconds
+        },
+    },
+
   },
   { timestamps: true }
 );

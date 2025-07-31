@@ -109,6 +109,7 @@ const menuItems = [
       "app-download",
       "testimonials",
       "counter",
+     
     ],
   },
   {
@@ -120,6 +121,7 @@ const menuItems = [
       "Footer Info",
       "Menu Builder",
       "Admin Management",
+       "logout",
     ],
   },
 ];

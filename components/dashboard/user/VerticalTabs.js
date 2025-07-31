@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme, useMediaQuery, Box } from "@mui/material";
 import { usePathname } from "next/navigation";
 import {
-  StyledAvatar,
+  
   StyledDivider,
   Root,
   StyledTabs,
@@ -12,6 +12,7 @@ import {
 } from "./styles";
 import { tabItems, CustomTab } from "./TabItems";
 
+import Footer from "@/components/footer/Footer";
 function VerticalTabs({ children }) {
   const pathname = usePathname();
   const theme = useTheme();
@@ -36,6 +37,8 @@ function VerticalTabs({ children }) {
   };
 
   return (
+
+<>
     <Box
       sx={{
         margin: "30px auto",
@@ -43,7 +46,7 @@ function VerticalTabs({ children }) {
         maxWidth: "1800px",
       }}
     >
-      <StyledAvatar alt="User" src="/images/user-avatar.jpg" />
+     
       <StyledDivider />
       <Root>
         <StyledTabs
@@ -68,6 +71,9 @@ function VerticalTabs({ children }) {
         </TabPanel>
       </Root>
     </Box>
+
+<Footer />
+</>
   );
 }
 

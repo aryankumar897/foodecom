@@ -112,7 +112,13 @@ import {
 } from "@mui/material";
 import CartSummary from "@/components/cart/CartSummary";
 import { useSession } from "next-auth/react";
+
+ 
+
+
 const Payment = () => {
+
+  
   const router = useRouter();
   const [checkoutData, setCheckoutData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -229,37 +235,47 @@ const Payment = () => {
 
   // 2. Payment handlers
   const handleStripe = async () => {
-    if (!checkoutData?.address) {
-      setError("Please select a delivery address");
-      return;
-    }
 
-    try {
-      setLoading(true);
 
-      // Example API call - replace with your actual payment integration
-      const response = await fetch(
-        `${process.env.API}/user/payment/stripepayment/stripe`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(checkoutData),
-        }
-      );
 
-      if (!response.ok) throw new Error("Payment initialization failed");
 
-      const data = await response.json();
-      if (!response.ok) {
-        toast.error(data.err);
-      } else {
-        window.location.href = data.url;
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+
+ 
+
+    // if (!checkoutData?.address) {
+    //   setError("Please select a delivery address");
+    //   return;
+    // }
+
+    // try {
+    //   setLoading(true);
+
+    //   // Example API call - replace with your actual payment integration
+    //   const response = await fetch(
+    //     `${process.env.API}/user/payment/stripepayment/stripe`,
+    //     {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(checkoutData),
+    //     }
+    //   );
+
+    //   if (!response.ok) throw new Error("Payment initialization failed");
+
+    //   const data = await response.json();
+    //   if (!response.ok) {
+    //     toast.error(data.err);
+    //   } else {
+    //     window.location.href = data.url;
+    //   }
+    // } catch (err) {
+    //   setError(err.message);
+    // } finally {
+    //   setLoading(false);
+    // }
+
+
+
   };
 
   const handlePaypal = async () => {

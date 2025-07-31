@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Box, Typography, CircularProgress, Chip, useMediaQuery, useTheme } from '@mui/material';
 import PostCard from './PostCard';
 import { useSelector } from 'react-redux';
-import { fetchProducts } from '@/slice/productSlice';
-import { fetchCategories } from '@/slice/categorySlice';
+import { fetchHomeProducts } from '@/slice/productSlice';
+import { fetchHomeCategories  } from '@/slice/categorySlice';
 import { useDispatch } from 'react-redux';
 
 export default function Listings() {
@@ -14,8 +14,8 @@ export default function Listings() {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
     // Get data from Redux store
-    const { list: products, loading: productsLoading } = useSelector((state) => state.products);
-    const { list: categories, loading: categoriesLoading } = useSelector((state) => state.categories);
+    const {  homeProducts: products, loading: productsLoading } = useSelector((state) => state.products);
+    const {  homeCategories: categories, loading: categoriesLoading } = useSelector((state) => state.categories);
     
     // State for filtered products
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -23,8 +23,8 @@ export default function Listings() {
 
     // Fetch data on component mount
     useEffect(() => {
-        dispatch(fetchProducts());
-        dispatch(fetchCategories());
+        dispatch(fetchHomeProducts());
+        dispatch(fetchHomeCategories());
     }, [dispatch]);
 
     // Filter products when category or products change

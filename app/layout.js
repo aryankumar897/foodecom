@@ -19,24 +19,31 @@ import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
 import { store } from "./store";
 
+
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   console.log(pathname, "pathname");
 
   return (
     <html lang="en">
-      <SessionProvider>
-        <Provider store={store}>
-          <body className={inter.className}>
-            <ToastContainer />
-            <Top />
-            <Nav />
+  
+        <SessionProvider>
+          <Provider store={store}>
 
-            {children}
-            {!pathname.startsWith("/dashboard") && <Footer />}
-          </body>
-        </Provider>
-      </SessionProvider>
+
+            <body className={inter.className}>
+              <ToastContainer />
+              <Top />
+              <Nav />
+
+              {children}
+              {!pathname.startsWith("/dashboard") && <Footer />}
+            </body>
+
+
+          </Provider>
+        </SessionProvider>
+   
     </html>
   );
 }

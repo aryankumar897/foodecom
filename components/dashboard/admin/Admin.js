@@ -8,33 +8,27 @@ import AppBarComponent from "./AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
 
 export default function Sidenav({ children }) {
+  const [open, setOpen] = React.useState(true);
 
-const [open, setOpen] = React.useState(true);
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
-const handleDrawerOpen = () => {
-  setOpen(true);
-};
-
-const handleDrawerClose = () => {
-  setOpen(false);
-};
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
-     
-     {/* <AppBarComponent open={open} handleDrawerOpen={handleDrawerOpen} />
-     */}
-    
-    
+      {/* <AppBarComponent open={open} handleDrawerOpen={handleDrawerOpen} />
+       */}
+
       <DrawerComponent
-     open={open} 
-  handleDrawerOpen={handleDrawerOpen} 
-  handleDrawerClose={handleDrawerClose} 
-       
-       />
-     
-     
-     
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        handleDrawerClose={handleDrawerClose}
+      />
+
       <Box component="main" sx={{ flexGrow: 1, pl: 5 }}>
         <DrawerHeader />
         {children}
