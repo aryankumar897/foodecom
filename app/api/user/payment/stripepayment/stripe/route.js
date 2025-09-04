@@ -97,8 +97,6 @@ const stripeInstance = new Stripe(
   "sk_test_51K5nvYSGgs9C5RdZpIIhINkUXAcMb46wbwGbJiGGWlt2VXjXhjP6wQerucW9lc3AUDCoMZ3ArV3zLIMxCQRSI24100pNDDDSew"
 );
 
-
-
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import dbConnect from "@/utils/dbConnect";
@@ -112,6 +110,17 @@ import Coupon from "@/model/coupon";
 import Cart from "@/model/cart";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/utils/authOptions";
+
+import Notification from "@/model/orderplacednotification";
+import Pusher from "pusher";
+
+const pusher = new Pusher({
+  appId: process.env.APP_ID,
+  key: process.env.KEY,
+  secret: process.env.SECRET,
+  cluster: process.env.CLUSTER,
+  useTLS: true,
+});
 
 const generateInvoiceId = () => {
   return `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -390,8 +399,7 @@ export async function POST(req) {
       mode: "payment",
       success_url: `http://localhost:3000/dashboard/user/stripe/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `http://localhost:3000/dashboard/user/stripe/order/canceled`,
-     
-     
+
       metadata: {
         order_id: newOrder._id.toString(),
         amount: serverTotal.toString(),
@@ -399,9 +407,21 @@ export async function POST(req) {
         coupon_id: couponData?.id.toString() || "", // <-- Added coupon ID
       },
 
-
-
       customer_email: session.user.email,
+    });
+
+    const notidata = {
+      message: "New order placed!",
+      userId: userId,
+      redirectUrl: `/dashboard/admin/orders/${newOrder?._id}`, // Add redirect URL
+      order_id: newOrder?._id,
+    };
+
+    const notification = await Notification.create(notidata);
+
+    // Trigger Pusher event to general channel
+    await pusher.trigger("notifications", "new-notification", {
+      notification,
     });
 
     // 9. Update order with Stripe ID
@@ -413,7 +433,6 @@ export async function POST(req) {
     await Cart.deleteMany({ userId: userId });
     return NextResponse.json({
       url: stripeSession.url,
-     
     });
   } catch (error) {
     console.error("[ERROR] Payment failed:", error.message);

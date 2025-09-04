@@ -1,8 +1,10 @@
-"use client"
-import React from 'react';
-import { Box, Card, CardMedia, CardContent, Typography, Badge, Rating, Container } from '@mui/material';
+"use client";
+import React, { useEffect } from 'react';
+import { Box, Card, CardMedia, CardContent, Typography, Rating, Container } from '@mui/material';
 import { styled } from '@mui/system';
 import Slider from 'react-slick';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchHomeTestimonials } from '@/slice/testimonialSlice';
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -18,8 +20,6 @@ const StyledCard = styled(Card)({
     margin: '1rem',
 });
 
-
-
 const CircleImage = styled(CardMedia)({
     borderRadius: '50%',
     width: '120px',
@@ -31,77 +31,39 @@ const PostCard = ({ post }) => {
     return (
         <StyledCard>
             <Box sx={{ margin:"auto"}}>
-               
-                    <CircleImage
-                        component="img"
-                        image={post.imageUrl}
-                        alt={post.title}
+                <CircleImage
+                    component="img"
+                    image={post.image}
+                    alt={post.name}
                     sx={{ marginTop: '60px', }}
-                    />
-                    <Typography variant="h6" component="div" sx={{ marginLeft: '100px', }}>
-                        {post.title}
-                    </Typography>
-                 
+                />
+                <Typography variant="h6" component="div" sx={{ marginLeft: '100px', }}>
+                    {post.name}
+                </Typography>
                 <Typography variant="body2" component="div" sx={{ marginLeft: '110px', }}>
                     {post.title}
                 </Typography>
-
-              
             </Box>
-          
             <Typography variant="body2" color="text.secondary" sx={{ flex: '1 1 auto', padding: 3 }} >
-                {post.location}
+                {post.review}
             </Typography>
             <Box sx={{ flex: '1 1 auto', padding: 1 }}>
                 <CardContent sx={{ color: 'black', backgroundColor: 'white', textAlign: 'center' }}>
-
                     <Rating name="read-only" value={post.rating} readOnly sx={{ mr: 9 }} />
-
                 </CardContent>
             </Box>
         </StyledCard>
     );
 };
 
-const dummyPosts = [
-    {
-        title: "Beautiful Mountain View",
-
-        rating: 4.5,
-        location: "his his setup should give you a layout where each slide setup should give you a layout where each slide ",
-        imageUrl: "/images/res2.jpg",
-    },
-    {
-        title: "Sunny Beach",
-
-        rating: 4.8,
-        location: "hishis setup should give you a layout where each slide  setup should give you a layout where each slide ",
-        imageUrl: "/images/res3.jpg",
-    },
-    {
-        title: "City Lights",
-
-        rating: 4.2,
-        location: "hishis setup should give you a layout where each slide  setup should give you a layout where each slide ",
-        imageUrl: "/images/res4.jpg",
-    },
-    {
-        title: "Serene Forest",
-
-        rating: 4.6,
-        location: "his  his setup should give you a layout where each slide   setup should give you a layout where each slide ",
-        imageUrl: "/images/res6.jpg",
-    },
-    {
-        title: "Desert Adventure",
-
-        rating: 4.7,
-        location: "Shis his setup should give you a layout where each slide setup should give you a layout where each slide ",
-        imageUrl: "/images/res8.jpg",
-    },
-];
-
 export default function ClientSaid() {
+    const dispatch = useDispatch();
+    const { homeTestimonials, loading, error } = useSelector((state) => state.testimonials);
+
+    useEffect(() => {
+        dispatch(fetchHomeTestimonials());
+    }, [dispatch]);
+
     const settings = {
         dots: true,
         infinite: false,
@@ -138,6 +100,22 @@ export default function ClientSaid() {
         ]
     };
 
+    if (loading) {
+        return (
+            <Box sx={{ textAlign: 'center', mt: 14 }}>
+                <Typography variant="h4">Loading testimonials...</Typography>
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box sx={{ textAlign: 'center', mt: 14 }}>
+                <Typography variant="h4" color="error">Error loading testimonials</Typography>
+            </Box>
+        );
+    }
+
     return (
         <Box sx={{
             margin: '0 auto',
@@ -146,85 +124,59 @@ export default function ClientSaid() {
         }}>
 
             <Box textAlign="center" mt={14}
-
                 sx={{
                     margin: '0 auto',
                     maxWidth: '600px',
                 }}
-
             >
                 <Typography 
                     sx={{
                         fontFamily: 'Roboto, sans-serif',
                         fontWeight: 700,
-                     
                         zIndex: 11111,
                         '&:hover': {
-
                             transform: 'scale(1.1)',
-
                         },
                         textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-
                         transition: 'transform 0.3s ease-in-out',
-
-
-
-
-
                     }}
-                
-                
-                variant="h4" gutterBottom mt={14}  >
+                    variant="h4" gutterBottom mt={14}
+                >
                     Testimonials
                 </Typography>
-
-
 
                 <Typography variant="h4" gutterBottom mt={1} 
                     sx={{
                         fontFamily: 'Roboto, sans-serif',
                         fontWeight: 700,
-                       
                         zIndex: 11111,
                         '&:hover': {
-
                             transform: 'scale(1.1)',
-
                         },
                         textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-
                         transition: 'transform 0.3s ease-in-out',
-
-
-
-
-
                     }}
-                
-                
-                 >
-                 oue customere feedbacka
+                >
+                    Our Customer Feedback
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-
-                    Adjust the styles (sx props) and other properties
-                    (such as colors, padding, etc.) to fit your specific
-
-                    components from Material-UI (Box, Typography, Badge).
+                    See what our satisfied customers have to say about our services
                 </Typography>
-
             </Box>
 
-
-
-            <Slider {...settings}>
-                {dummyPosts.map((post, index) => (
-                    <Box key={index} sx={{ padding: 1 }}>
-                        <PostCard post={post} />
-                    </Box>
-                ))}
-            </Slider>
+            {homeTestimonials && homeTestimonials.length > 0 ? (
+                <Slider {...settings}>
+                    {homeTestimonials.map((testimonial, index) => (
+                        <Box key={testimonial._id || index} sx={{ padding: 1 }}>
+                            <PostCard post={testimonial} />
+                        </Box>
+                    ))}
+                </Slider>
+            ) : (
+                <Box sx={{ textAlign: 'center', mt: 4 }}>
+                    <Typography variant="h6">No testimonials available</Typography>
+                </Box>
+            )}
         </Box>
     );
 }

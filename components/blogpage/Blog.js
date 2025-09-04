@@ -1,159 +1,157 @@
-"use client"
-import React from 'react';
-import Head from 'next/head';
+"use client";
 
-import Badge from '@mui/material/Badge';
-import PersonIcon from '@mui/icons-material/Person';
-import CommentIcon from '@mui/icons-material/Comment';
-import { styled } from '@mui/material/styles';
-import EventIcon from '@mui/icons-material/Event'; // Import EventIcon for date
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHomeBlogs } from "@/slice/blogSlice";
+import { toast } from "react-toastify";
 
-import {  Box, Grid, Container, Card, CardContent, CardMedia, Typography, CardActions, Button } from '@mui/material';
+import Badge from "@mui/material/Badge";
+import PersonIcon from "@mui/icons-material/Person";
+import CommentIcon from "@mui/icons-material/Comment";
+import { styled } from "@mui/material/styles";
+import EventIcon from "@mui/icons-material/Event";
+import { useRouter } from "next/navigation";
+import {
+  Button,
+  CardActions,
+  Box,
+  Grid,
+  Container,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+} from "@mui/material";
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
-    '& .MuiBadge-badge': {
-        backgroundColor: 'red', // Customize the badge color here
-        color: 'white', // Customize the badge text color here (if any)
-        width: '120px', // Increase the width of the badge
-        height: '20px',
-    },
+  "& .MuiBadge-badge": {
+    backgroundColor: "red",
+    color: "white",
+    width: "120px",
+    height: "20px",
+  },
 }));
 
 const HomePage = () => {
-    // Dummy data for blog posts
-    const posts = [
-        {
-            id: 1,
-            title: 'Sample Blog Post 1',
-            image: '/images/res7.jpg',
-            categories: ['Technology', 'Next.js'],
-            date: '2024-06-21',
-            user: {
-                name: 'John Doe',
-                icon: '/images/res4.jpg'
-            },
-            description: 'This is the content of Sample Blog Post 1. You can add more details here.',
-        },
-        {
-            id: 2,
-            title: 'Sample Blog Post 2',
-            image: '/images/res3.jpg',
-            categories: ['Design', 'UI/UX'],
-            date: '2024-06-20',
-            user: {
-                name: 'Jane Smith',
-                icon: '/images/res3.jpg'
-            },
-            description: 'This is the content of Sample Blog Post 2. You can add more details here.',
-        },
-        {
-            id: 3,
-            title: 'Sample Blog Post 3',
-            image: '/images/res2.jpg',
-            categories: ['Design', 'UI/UX'],
-            date: '2024-06-20',
-            user: {
-                name: 'Michael Johnson',
-                icon: '/images/res2.jpg'
-            },
-            description: 'This is the content of Sample Blog Post 3. You can add more details here.',
-        },
-        // Add more posts as needed
-    ];
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { homeBlogs: posts, loading } = useSelector((state) => state.blogs);
 
-    return (
-        <Box sx={{
-            margin: '0 auto',
-            width: '80%',  // Set full width of the container
-            maxWidth: '1080px',
-        }}>
+  useEffect(() => {
+    dispatch(fetchHomeBlogs());
+  }, [dispatch]);
 
-            <Box textAlign="center" mt={14}>
+  const handleArticleClick = (articleId) => {
+    router.push(`/blogs?slug=${articleId}`);
+  };
+  return (
+    <Box sx={{ margin: "0 auto", width: "80%", maxWidth: "1080px" }}>
+      <Box textAlign="center" mt={14}>
+        <Typography variant="h4" gutterBottom>
+          Our Blog
+        </Typography>
 
-                <Typography variant="h4" gutterBottom>
-                    Our Blog
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                    Adjust the styles and properties to fit your specific components from Material-UI.
-                </Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          Adjust the styles and properties to fit your specific components from
+          Material-UI.
+        </Typography>
+      </Box>
 
-            </Box>
+      <Container sx={{ marginTop: "20px" }}>
+        <Grid container spacing={3}>
+          {loading ? (
+            <Typography
+              variant="h6"
+              sx={{ textAlign: "center", width: "100%" }}
+            >
+              Loading blogs...
+            </Typography>
+          ) : posts.length === 0 ? (
+            <Typography
+              variant="h6"
+              sx={{ textAlign: "center", width: "100%" }}
+            >
+              No blogs found.
+            </Typography>
+          ) : (
+            posts.map((post) => (
+              <Grid item key={post._id} xs={12} sm={6} md={4}>
+                <Card sx={{ margin: "2px" }}>
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    image={post.thumb_image || "/images/default-blog.jpg"}
+                    alt={post.title}
+                    sx={{
+                      transition: "transform 0.3s ease-in-out",
+                      "&:hover": { transform: "scale(1.1)" },
+                    }}
+                  />
+                  <CardContent>
+                    <Box display="flex" alignItems="center" mb={1}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                      >
+                        <EventIcon sx={{ color: "red" }} />{" "}
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </Typography>
 
-            <Container sx={{ marginTop: "20px" }}>
-                <Grid container spacing={3}>
-                    {posts.map(post => (
-                        <Grid item key={post.id} xs={12} sm={6} md={4}>
-                            <Card sx={{ margin: '2px' }}>
-                                <CardMedia
-                                    component="img"
-                                    height="180"
-                                    image={post.image}
-                                    alt={post.title}
-                                    sx={{
-                                        transition: 'transform 0.3s ease-in-out',
-                                        '&:hover': {
-                                            transform: 'scale(1.1)',
-                                        },
-                                    }}
-                                />
-                                <CardContent>
-                                    <Box display="flex" alignItems="center" mb={1}>
+                      <StyledBadge
+                        badgeContent={post.author?.name || "Unknown"}
+                        sx={{ ml: 1, mt: -10 }}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
+                      ></StyledBadge>
 
-                                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                            <EventIcon sx={{ color: 'red',}} />    {new Date(post.date).toLocaleDateString()}
-                                        </Typography>
-                                        {/* <img src={post.user.icon} alt={post.user.name} style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '10px' }} /> */}
-                                      
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ ml: 5, mt: 1 }}
+                      >
+                        <PersonIcon sx={{ color: "red" }} />{" "}
+                        {post.author?.name || "Unknown"}
+                      </Typography>
 
-                                        <StyledBadge
-                                        
-                                            badgeContent={post.user.name}
-                                            sx={{ ml: 1, mt: -10 }}
-                                            anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'left',
-                                            }}
-                                        >
-                                           
-                                        </StyledBadge>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ ml: 5, mt: 1 }}
+                      >
+                        <CommentIcon sx={{ color: "red" }} />{" "}
+                        {post.comments?.length || 0} comments
+                      </Typography>
+                    </Box>
 
-                                        <Typography variant="body2" color="text.secondary" sx={{ ml: 5, mt: 1 }}>
-                                            <PersonIcon sx={{ color: 'red'}} />   {post.user.name}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ ml: 5, mt: 1 }}>
-                                            <CommentIcon sx={{ color: 'red' }} /> 0  comment
-                                        </Typography>
+                    <Typography gutterBottom variant="body2" component="div">
+                      {post.title}
+                    </Typography>
 
-                                    </Box>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        {post.title}
-                                    </Typography>
-
-                                    {/* <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                        {post.description}
-                                    </Typography> */}
-
-                                </CardContent>
-                                {/* <CardActions>
-                                    <Button
-
-                                        sx={{
-
-                                            color: "#ff531a",
-
-                                        }}
-
-                                        size="small"
-
-
-                                    >Learn More</Button>
-                                </CardActions> */}
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        </Box>
-    );
+                    <CardActions>
+                      {" "}
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleArticleClick(post.slug);
+                        }}
+                        sx={{ color: "#ff531a" }}
+                        size="small"
+                      >
+                        Learn More
+                      </Button>{" "}
+                    </CardActions>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          )}
+        </Grid>
+      </Container>
+    </Box>
+  );
 };
 
 export default HomePage;

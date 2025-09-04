@@ -31,7 +31,7 @@ import { useSelector } from "react-redux";
 
 
 
-
+import Notification from "@/components/nav/notification/NotificationPanel"
 
 
 const Nav = () => {
@@ -118,13 +118,7 @@ const Nav = () => {
           Contact
         </Button>
       </Link>
-      <Link href="/test" passHref>
-        <Button
-          sx={{ color: "black", fontSize: isSmallScreen ? "0.8rem" : "1rem" }}
-        >
-          Test
-        </Button>
-      </Link>
+     
       <Button
         sx={{ color: "black", fontSize: isSmallScreen ? "0.8rem" : "1rem" }}
         onClick={handleClick}
@@ -146,6 +140,18 @@ const Nav = () => {
         <MenuItem onClick={handleClose}>
           <Link href="/contact" passHref>
             Contact
+          </Link>
+        </MenuItem>
+
+ <MenuItem onClick={handleClose}>
+          <Link href="/term" passHref>
+           Term
+          </Link>
+        </MenuItem>
+
+ <MenuItem onClick={handleClose}>
+          <Link href="/privacy" passHref>
+           Privacy
           </Link>
         </MenuItem>
       </Menu>
@@ -285,7 +291,7 @@ const Nav = () => {
             )}
           </IconButton>
 
-       
+       <Notification/>
 
           <Button
             variant="contained"

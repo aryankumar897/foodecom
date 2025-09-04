@@ -29,7 +29,7 @@ import {
   submitButtonStyles,
   switchStyles,
   formInnerStyles,
-  aiButtonStyles
+  aiButtonStyles,
 } from "./sliderFormStyles";
 
 const SliderForm = () => {
@@ -112,7 +112,7 @@ const SliderForm = () => {
       const aiResponse = await runAi(prompt);
       setFormData((prev) => ({ ...prev, [field]: aiResponse }));
     } catch (error) {
-        alert(error)
+      alert(error);
       console.error("AI generation error:", error);
       setLocalError(
         `Failed to generate ${field}. ${error.message || "Please try again."}`
@@ -187,178 +187,174 @@ const SliderForm = () => {
 
   return (
     <Box sx={formContainerStyles}>
+      <Box sx={formInnerStyles}>
+        <Typography variant="h4" component="h1" gutterBottom sx={titleStyles}>
+          Add New Slider
+        </Typography>
 
-<Box sx={formInnerStyles}>
+        {(localError || error) && (
+          <Alert severity="error" sx={alertStyles}>
+            {localError || error}
+          </Alert>
+        )}
 
-      <Typography variant="h4" component="h1" gutterBottom sx={titleStyles}>
-        Add New Slider
-      </Typography>
+        {localSuccess && (
+          <Alert severity="success" sx={alertStyles}>
+            Slider created successfully!
+          </Alert>
+        )}
 
-      {(localError || error) && (
-        <Alert severity="error" sx={alertStyles}>
-          {localError || error}
-        </Alert>
-      )}
+        <form onSubmit={handleSubmit}>
+          <ImageUpload
+            imagePreview={imagePreview}
+            setImagePreview={setImagePreview}
+            setImageFile={setImageFile}
+          />
 
-      {localSuccess && (
-        <Alert severity="success" sx={alertStyles}>
-          Slider created successfully!
-        </Alert>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <ImageUpload
-          imagePreview={imagePreview}
-          setImagePreview={setImagePreview}
-          setImageFile={setImageFile}
-        />
-
-        <TextField
-          fullWidth
-          label="Offer Text (e.g., '50% OFF')"
-          name="offer"
-          value={formData.offer}
-          onChange={handleChange}
-          variant="outlined"
-          size={isSmallScreen ? "small" : "medium"}
-          sx={textFieldStyles}
-        />
-
-        <Box sx={{ position: "relative", mb: 3 }}>
           <TextField
             fullWidth
-            label="Title*"
-            name="title"
-            value={formData.title}
+            label="Offer Text (e.g., '50% OFF')"
+            name="offer"
+            value={formData.offer}
             onChange={handleChange}
-            required
             variant="outlined"
             size={isSmallScreen ? "small" : "medium"}
             sx={textFieldStyles}
           />
-          <Tooltip title="Generate with AI">
-            <IconButton
-              onClick={() => generateAIContent("title")}
-              disabled={isGenerating}
-               sx={aiButtonStyles}
-            >
-              {isGenerating ? (
-                <CircularProgress size={24} />
-              ) : (
-                <AutoFixHigh sx={{ color: "red" }} />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Box>
 
-        <Box sx={{ position: "relative", mb: 3 }}>
-          <TextField
-            fullWidth
-            label="Sub Title*"
-            name="sub_title"
-            value={formData.sub_title}
-            onChange={handleChange}
-            required
-            variant="outlined"
-            size={isSmallScreen ? "small" : "medium"}
-            sx={textFieldStyles}
-          />
-          <Tooltip title="Generate with AI">
-            <IconButton
-              onClick={() => generateAIContent("sub_title")}
-              disabled={isGenerating}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            >
-              {isGenerating ? (
-                <CircularProgress size={24} />
-              ) : (
-                <AutoFixHigh sx={{ color: "red" }} />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Box>
-
-        <Box sx={{ position: "relative", mb: 3 }}>
-          <TextField
-            fullWidth
-            label="Short Description"
-            name="short_description"
-            value={formData.short_description}
-            onChange={handleChange}
-            multiline
-            rows={3}
-            variant="outlined"
-            sx={textFieldStyles}
-          />
-          <Tooltip title="Generate with AI">
-            <IconButton
-              onClick={() => generateAIContent("short_description")}
-              disabled={isGenerating}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 16,
-              }}
-            >
-              {isGenerating ? (
-                <CircularProgress size={24} />
-              ) : (
-                <AutoFixHigh sx={{ color: "red" }} />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Box>
-
-        <TextField
-          fullWidth
-          label="Button Link*"
-          name="button_link"
-          value={formData.button_link}
-          onChange={handleChange}
-          required
-          variant="outlined"
-          size={isSmallScreen ? "small" : "medium"}
-          sx={textFieldStyles}
-          placeholder="https://example.com"
-        />
-
-        <FormControlLabel
-          control={
-            <Switch
-              checked={formData.status}
-              onChange={handleStatusChange}
-              name="status"
-              sx={switchStyles}
+          <Box sx={{ position: "relative", mb: 3 }}>
+            <TextField
+              fullWidth
+              label="Title*"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              size={isSmallScreen ? "small" : "medium"}
+              sx={textFieldStyles}
             />
-          }
-          label="Active Slider"
-          sx={{ mb: 3 }}
-        />
+            <Tooltip title="Generate with AI">
+              <IconButton
+                onClick={() => generateAIContent("title")}
+                disabled={isGenerating}
+                sx={aiButtonStyles}
+              >
+                {isGenerating ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <AutoFixHigh sx={{ color: "red" }} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
 
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Button
+          <Box sx={{ position: "relative", mb: 3 }}>
+            <TextField
+              fullWidth
+              label="Sub Title*"
+              name="sub_title"
+              value={formData.sub_title}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              size={isSmallScreen ? "small" : "medium"}
+              sx={textFieldStyles}
+            />
+            <Tooltip title="Generate with AI">
+              <IconButton
+                onClick={() => generateAIContent("sub_title")}
+                disabled={isGenerating}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              >
+                {isGenerating ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <AutoFixHigh sx={{ color: "red" }} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          <Box sx={{ position: "relative", mb: 3 }}>
+            <TextField
+              fullWidth
+              label="Short Description"
+              name="short_description"
+              value={formData.short_description}
+              onChange={handleChange}
+              multiline
+              rows={3}
+              variant="outlined"
+              sx={textFieldStyles}
+            />
+            <Tooltip title="Generate with AI">
+              <IconButton
+                onClick={() => generateAIContent("short_description")}
+                disabled={isGenerating}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 16,
+                }}
+              >
+                {isGenerating ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  <AutoFixHigh sx={{ color: "red" }} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          <TextField
             fullWidth
-            type="submit"
-            variant="contained"
-            size={isSmallScreen ? "medium" : "large"}
-            disabled={loading || isGenerating}
-            sx={submitButtonStyles}
-            startIcon={
-              loading ? <CircularProgress size={20} color="inherit" /> : null
+            label="Button Link*"
+            name="button_link"
+            value={formData.button_link}
+            onChange={handleChange}
+            required
+            variant="outlined"
+            size={isSmallScreen ? "small" : "medium"}
+            sx={textFieldStyles}
+            placeholder="https://example.com"
+          />
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.status}
+                onChange={handleStatusChange}
+                name="status"
+                sx={switchStyles}
+              />
             }
-          >
-            {loading ? "Creating..." : "Create Slider"}
-          </Button>
-        </Box>
-      </form>
-</Box>
+            label="Active Slider"
+            sx={{ mb: 3 }}
+          />
 
-
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              size={isSmallScreen ? "medium" : "large"}
+              disabled={loading || isGenerating}
+              sx={submitButtonStyles}
+              startIcon={
+                loading ? <CircularProgress size={20} color="inherit" /> : null
+              }
+            >
+              {loading ? "Creating..." : "Create Slider"}
+            </Button>
+          </Box>
+        </form>
+      </Box>
     </Box>
   );
 };

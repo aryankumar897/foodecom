@@ -235,44 +235,37 @@ const Payment = () => {
 
   // 2. Payment handlers
   const handleStripe = async () => {
+    if (!checkoutData?.address) {
+      setError("Please select a delivery address");
+      return;
+    }
 
+    try {
+      setLoading(true);
 
+      // Example API call - replace with your actual payment integration
+      const response = await fetch(
+        `${process.env.API}/user/payment/stripepayment/stripe`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(checkoutData),
+        }
+      );
 
+      if (!response.ok) throw new Error("Payment initialization failed");
 
-
- 
-
-    // if (!checkoutData?.address) {
-    //   setError("Please select a delivery address");
-    //   return;
-    // }
-
-    // try {
-    //   setLoading(true);
-
-    //   // Example API call - replace with your actual payment integration
-    //   const response = await fetch(
-    //     `${process.env.API}/user/payment/stripepayment/stripe`,
-    //     {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify(checkoutData),
-    //     }
-    //   );
-
-    //   if (!response.ok) throw new Error("Payment initialization failed");
-
-    //   const data = await response.json();
-    //   if (!response.ok) {
-    //     toast.error(data.err);
-    //   } else {
-    //     window.location.href = data.url;
-    //   }
-    // } catch (err) {
-    //   setError(err.message);
-    // } finally {
-    //   setLoading(false);
-    // }
+      const data = await response.json();
+      if (!response.ok) {
+        toast.error(data.err);
+      } else {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
 
 
 

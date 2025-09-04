@@ -43,7 +43,7 @@ import {
   drawerWidth,
   mobileDrawerWidth,
 } from "./DrawerStyles";
-
+import ChatIcon from "@mui/icons-material/Chat";
 const menuItems = [
   {
     title: "Main",
@@ -75,55 +75,64 @@ const menuItems = [
   {
     title: "Manage Orders",
     icon: <ListAltIcon />,
-    items: ["orders/allorders", "orders/inprocess", "orders/delivered", "orders/pending", "orders/cancelled"   ],
+    items: [
+      "orders/allorders",
+      "orders/inprocess",
+      "orders/delivered",
+      "orders/pending",
+      "orders/cancelled",
+    ],
+  },
+
+  {
+    title: "Manage Messages",
+    icon: <ChatIcon/>,
+    items: ["message"],
   },
 
   {
     title: "Manage Reservation",
     icon: <CalendarIcon />,
-    items: ["reservation-times", "reservation"],
+    items: [
+      "reservation-times/create",
+      "reservation-times/list",
+      "reservation",
+    ],
   },
+
+
+ {
+    title: "Manage Chefs",
+    icon: <InventoryIcon />,
+    items: ["chefs/create", "chefs/list"],
+  },
+
+   {
+    title: "Manage Testimonials",
+    icon: <InventoryIcon />,
+    items: ["testimonials/create", "testimonials/list"],
+  },
+ {
+    title: "Manage Banner",
+    icon: <InventoryIcon />,
+    items: ["banner/create", "banner/list"],
+  },
+
+  {
+    title: "Manage Daily Offer",
+    icon: <InventoryIcon />,
+    items: ["dailyoffer"],
+  },
+
+
   {
     title: "Blog",
     icon: <ArticleIcon />,
-    items: ["categories", "all-blog", "comments"],
+    items: ["blog/create", "blog/list"],
   },
-  {
-    title: "Pages",
-    icon: <ArticleIcon />,
-    items: [
-      "custom-page",
-      "about",
-      "contact",
-      "privacy-policy",
-      "term-conditons",
-    ],
-  },
-  {
-    title: "Sections",
-    icon: <WidgetsIcon />,
-    items: [
-      "why-choose-us",
-      "banner-slider",
-      "chefs",
-      "app-download",
-      "testimonials",
-      "counter",
-     
-    ],
-  },
-  {
-    title: "Others",
-    icon: <SettingsIcon />,
-    items: [
-      "News Latters",
-      "Social Links",
-      "Footer Info",
-      "Menu Builder",
-      "Admin Management",
-       "logout",
-    ],
-  },
+  
+ 
+
 ];
 
 export default function ResponsiveDrawer({
@@ -373,7 +382,7 @@ function DrawerContent({
                     >
                       <ListItemIcon sx={styles.icon}>
                         {React.cloneElement(menuItem.icon, {
-                          sx: { color: "#ffffff" },
+                          sx: { color: "#ec0c0cff" },
                         })}
                       </ListItemIcon>
                       <ListItemText
@@ -381,7 +390,7 @@ function DrawerContent({
                         sx={{
                           ...styles.text,
                           opacity: open ? 1 : 0,
-                          color: "#ffffff",
+                          color: "#dd3333ff",
                         }}
                       />
                     </ListItemButton>

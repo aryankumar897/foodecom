@@ -25,11 +25,14 @@ import {
   RatingBox,
 } from "./PostCardStyles";
 
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+
 const PostCard = ({ post }) => {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const { data } = useSession();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -42,6 +45,32 @@ const PostCard = ({ post }) => {
     price = "$0.00",
     product_slug,
   } = post;
+
+  const handlewishlist = async () => {
+    if (!data) {
+      toast.error("Please login first");
+      //return
+    }
+
+    try {
+      const productId = post.productId;
+      const response = await fetch(`${process.env.API}/user/wishlist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId }),
+      });
+      const data = await response.json();
+      if (data?.err) {
+        toast.error(data?.err);
+      } else {
+        toast.success("Product added successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -69,6 +98,7 @@ const PostCard = ({ post }) => {
 
           {/* Wishlist Button */}
           <IconButton
+            onClick={handlewishlist}
             sx={{
               position: "absolute",
               top: theme.spacing(1),

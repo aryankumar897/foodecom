@@ -1,9 +1,13 @@
-"use client"
-import React from 'react';
-import { Box, Card, CardMedia, CardContent, Typography, Badge, Rating, Container } from '@mui/material';
+
+
+"use client";
+import React, { useEffect } from 'react';
+import { Box, Card, CardMedia, CardContent, Typography, Container, CircularProgress} from '@mui/material';
 import { styled } from '@mui/system';
 import Slider from 'react-slick';
 import { Facebook, Twitter, Instagram } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchHomeChefs  } from '@/slice/chefSlice';
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -19,8 +23,6 @@ const StyledCard = styled(Card)({
     margin: '1rem',
 });
 
-
-
 const CircleImage = styled(CardMedia)({
     borderRadius: '50%',
     width: '120px',
@@ -28,38 +30,42 @@ const CircleImage = styled(CardMedia)({
     margin: '0 auto',
 });
 
-const PostCard = ({ post }) => {
+const ChefCard = ({ chef }) => {
     return (
         <StyledCard>
             <Box sx={{ margin: "auto" }}>
-
                 <CircleImage
                     component="img"
-                    image={post.imageUrl}
-                    alt={post.title}
-                    sx={{ marginTop: '60px', }}
+                    image={chef.image || '/images/default-chef.jpg'}
+                    alt={chef.name}
+                    sx={{ marginTop: '60px' }}
                 />
-                <Typography variant="h6" component="div" sx={{ marginLeft: '100px', }}>
-                    {post.title}
+                <Typography variant="h6" component="div" sx={{ textAlign: 'center', mt: 2 }}>
+                    {chef.name}
                 </Typography>
-
-                <Typography variant="body2" component="div" sx={{ marginLeft: '110px', }}>
-                    {post.title}
+                <Typography variant="body2" component="div" sx={{ textAlign: 'center' }}>
+                    {chef.title}
                 </Typography>
-
-
             </Box>
 
-            <Typography variant="body2" color="text.secondary" sx={{ flex: '1 1 auto', padding: 3 }} >
-                {post.location}
-            </Typography>
             <Box sx={{ flex: '1 1 auto', padding: 1 }}>
                 <CardContent sx={{ color: 'black', backgroundColor: 'white', textAlign: 'center' }}>
-
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-                        <Facebook sx={{ color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '5px' }} />
-                        <Twitter sx={{ color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '5px' }} />
-                        <Instagram sx={{ color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '5px' }} />
+                        {chef.fb && (
+                            <a href={chef.fb} target="_blank" rel="noopener noreferrer">
+                                <Facebook sx={{ color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '5px' }} />
+                            </a>
+                        )}
+                        {chef.x && (
+                            <a href={chef.x} target="_blank" rel="noopener noreferrer">
+                                <Twitter sx={{ color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '5px' }} />
+                            </a>
+                        )}
+                        {chef.in && (
+                            <a href={chef.in} target="_blank" rel="noopener noreferrer">
+                                <Instagram sx={{ color: 'white', backgroundColor: 'red', borderRadius: '50%', padding: '5px' }} />
+                            </a>
+                        )}
                     </Box>
                 </CardContent>
             </Box>
@@ -67,32 +73,14 @@ const PostCard = ({ post }) => {
     );
 };
 
-const dummyPosts = [
-    {
-        title: "Beautiful Mountain View",
+export default function ExpertChefs() {
+    const dispatch = useDispatch();
+    const {  homeChefs: chefs, loading } = useSelector((state) => state.chefs);
 
-        rating: 4.5,
-        location: "his his setup should give you a layout where each slide setup should give you a layout where each slide ",
-        imageUrl: "/images/res12.jpg",
-    },
-    {
-        title: "Sunny Beach",
+    useEffect(() => {
+        dispatch(fetchHomeChefs());
+    }, [dispatch]);
 
-        rating: 4.8,
-        location: "hishis setup should give you a layout where each slide  setup should give you a layout where each slide ",
-        imageUrl: "/images/res13.jpg",
-    },
-    {
-        title: "City Lights",
-
-        rating: 4.2,
-        location: "hishis setup should give you a layout where each slide  setup should give you a layout where each slide ",
-        imageUrl: "/images/res12.jpg",
-    },
-  
-];
-
-export default function ClientSaid() {
     const settings = {
         dots: true,
         infinite: false,
@@ -134,88 +122,53 @@ export default function ClientSaid() {
             margin: '0 auto',
             width: '80%',
             maxWidth: '1070px',
+            py: 8
         }}>
-
-            <Box textAlign="center" mt={14}
-
-                sx={{
-                    margin: '0 auto',
-                    maxWidth: '600px',
-                }}
-
-            >
+            <Box textAlign="center" sx={{ margin: '0 auto', maxWidth: '600px' }}>
                 <Typography
                     sx={{
                         fontFamily: 'Roboto, sans-serif',
                         fontWeight: 700,
-
                         zIndex: 11111,
-                        '&:hover': {
-
-                            transform: 'scale(1.1)',
-
-                        },
+                        '&:hover': { transform: 'scale(1.1)' },
                         textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-
                         transition: 'transform 0.3s ease-in-out',
-
-
-
-
-
                     }}
-
-
-                    variant="h4" gutterBottom mt={14}  >
-                  our team
+                    variant="h4" gutterBottom
+                >
+                    Our Team
                 </Typography>
 
-
-
-                <Typography variant="h4" gutterBottom mt={1}
+                <Typography variant="h4" gutterBottom
                     sx={{
                         fontFamily: 'Roboto, sans-serif',
                         fontWeight: 700,
-
                         zIndex: 11111,
-                        '&:hover': {
-
-                            transform: 'scale(1.1)',
-
-                        },
+                        '&:hover': { transform: 'scale(1.1)' },
                         textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
-
                         transition: 'transform 0.3s ease-in-out',
-
-
-
-
-
                     }}
-
-
                 >
-                   Expert chef
+                    Expert Chefs
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-
-                    Adjust the styles (sx props) and other properties
-                    (such as colors, padding, etc.) to fit your specific
-
-                    
+                    Meet our talented team of professional chefs
                 </Typography>
-
             </Box>
 
-
-
-            <Slider {...settings}>
-                {dummyPosts.map((post, index) => (
-                    <Box key={index} sx={{ padding: 1 }}>
-                        <PostCard post={post} />
-                    </Box>
-                ))}
-            </Slider>
+            {loading ? (
+                <Box textAlign="center" py={4}>
+                    <CircularProgress />
+                </Box>
+            ) : (
+                <Slider {...settings}>
+                    {chefs.filter(chef => chef.status).map((chef) => (
+                        <Box key={chef._id} sx={{ padding: 1 }}>
+                            <ChefCard chef={chef} />
+                        </Box>
+                    ))}
+                </Slider>
+            )}
         </Box>
     );
 }

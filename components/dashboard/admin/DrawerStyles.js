@@ -11,7 +11,7 @@ export const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
-  boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
+  boxShadow: "1px 0 1px rgba(0, 0, 0, 0.1)",
   background: "#ffffff", // white background
   [theme.breakpoints.down("sm")]: {
     width: mobileDrawerWidth,
@@ -25,7 +25,7 @@ export const closedMixin = (theme) => ({
   }),
   overflowX: "hidden",
   width: `calc(${theme.spacing(9)} + 1px)`,
-  boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
+  boxShadow: "1px 0 2px rgba(0, 0, 0, 0.1)",
   background: "#ffffff", // white background
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(9)} + 1px)`,

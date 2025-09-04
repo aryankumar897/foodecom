@@ -45,6 +45,9 @@ export default function Listings() {
     };
 
     return (
+
+
+
         <Box sx={{
             margin: '0 auto',
             width: '80%',
@@ -162,5 +165,8 @@ export default function Listings() {
                 </Grid>
             )}
         </Box>
+
+
+
     );
 }

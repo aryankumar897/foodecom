@@ -82,7 +82,10 @@ export default function ProductTabs({ product }) {
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-        <ReviewsAndFeedback />
+        <ReviewsAndFeedback 
+        
+        product={product}
+        />
       </CustomTabPanel>
     </Box>
   );
