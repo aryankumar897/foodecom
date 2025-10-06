@@ -1,6 +1,3 @@
-
-
-
 import { NextResponse } from "next/server";
 
 import dbConnect from "@/utils/dbConnect";
@@ -15,9 +12,7 @@ import Cart from "@/model/cart";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/utils/authOptions";
 
-
-
-import paypal from '@paypal/checkout-server-sdk'; // Import PayPal SDK for handling PayPal transactions
+import paypal from "@paypal/checkout-server-sdk"; // Import PayPal SDK for handling PayPal transactions
 
 // Set up PayPal environment with client ID and secret (sandbox mode for testing)
 let environment = new paypal.core.SandboxEnvironment(
@@ -27,11 +22,6 @@ let environment = new paypal.core.SandboxEnvironment(
 
 // Create PayPal client to interact with the PayPal API
 let client = new paypal.core.PayPalHttpClient(environment);
-
-
-
-
-
 
 const generateInvoiceId = () => {
   return `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -252,12 +242,7 @@ export async function POST(req) {
       );
     }
 
-   
- 
-   
-
-
-     // 6. Create order record
+    // 6. Create order record
     const newOrder = new Orders({
       invoice_id: generateInvoiceId(),
       user_id: userId,
@@ -300,7 +285,7 @@ export async function POST(req) {
       user_id: userId.toString(),
       coupon_id: couponData?.id.toString() || "",
       amount: serverTotal.toString(),
-      invoice_id: newOrder.invoice_id
+      invoice_id: newOrder.invoice_id,
     };
 
     const request = new paypal.orders.OrdersCreateRequest();
@@ -308,41 +293,50 @@ export async function POST(req) {
 
     request.requestBody({
       intent: "CAPTURE",
-      purchase_units: [{
-        reference_id: metadata.order_id,
-        custom_id: JSON.stringify(metadata),
-        invoice_id: metadata.invoice_id,
-        description: `Order ${newOrder.invoice_id} (${cartItems.length} items)`,
-        amount: {
-          currency_code: "USD",
-          value: metadata.amount,
-          breakdown: {
-            item_total: { currency_code: "USD", value: serverSubtotal.toFixed(2) },
-            discount: { currency_code: "USD", value: serverDiscount.toFixed(2) },
-            shipping: { currency_code: "USD", value: deliveryFee.toFixed(2) }
-          }
+      purchase_units: [
+        {
+          reference_id: metadata.order_id,
+          custom_id: JSON.stringify(metadata),
+          invoice_id: metadata.invoice_id,
+          description: `Order ${newOrder.invoice_id} (${cartItems.length} items)`,
+          amount: {
+            currency_code: "USD",
+            value: metadata.amount,
+            breakdown: {
+              item_total: {
+                currency_code: "USD",
+                value: serverSubtotal.toFixed(2),
+              },
+              discount: {
+                currency_code: "USD",
+                value: serverDiscount.toFixed(2),
+              },
+              shipping: { currency_code: "USD", value: deliveryFee.toFixed(2) },
+            },
+          },
+          items: validatedItems.map((item) => ({
+            name: item.product.name,
+            unit_amount: {
+              currency_code: "USD",
+              value: item.unitPrice.toFixed(2),
+            },
+            quantity: item.quantity.toString(),
+
+            description:
+              [item.size?.name, ...item.options.map((o) => o.name)]
+                .filter(Boolean)
+                .join(", ") || undefined,
+          })),
         },
-        items: validatedItems.map(item => ({
-          name: item.product.name,
-          unit_amount: { currency_code: "USD", value: item.unitPrice.toFixed(2) },
-          quantity: item.quantity.toString(),
-         
-          description: [
-            item.size?.name,
-            ...item.options.map(o => o.name)
-          ].filter(Boolean).join(', ') || undefined
-        }))
-      }],
+      ],
       application_context: {
-     
         return_url: `http://localhost:3000/dashboard/user/paypal/order/success`,
         cancel_url: `http://localhost:3000/dashboard/user/paypal/order/canceled`,
-      
-      }
+      },
     });
 
     // 9. Execute PayPal request
-    const paypalOrder =  await client.execute(request);
+    const paypalOrder = await client.execute(request);
     console.log("PayPal order created:", paypalOrder.result.id);
 
     //** */ 10. Update order with PayPal ID
@@ -351,22 +345,23 @@ export async function POST(req) {
 
     // 11. Find approval URL
     const approvalLink = paypalOrder.result.links.find(
-      link => link.rel === "approve"
+      (link) => link.rel === "approve"
     );
 
     if (!approvalLink) {
       throw new Error("No approval link found in PayPal response");
     }
 
-
-     console.log("paypalOrder ",paypalOrder )
+    console.log("paypalOrder ", paypalOrder);
     // 12. Empty the user's cart after successful order creation
     await Cart.deleteMany({ userId: userId });
 
     return NextResponse.json({
       url: approvalLink.href,
-     
     });
+
+
+    
   } catch (error) {
     console.error("[ERROR] Payment failed:", error.message);
     return NextResponse.json(
@@ -375,54 +370,5 @@ export async function POST(req) {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // //sb-drhne26200129@personal.example.com

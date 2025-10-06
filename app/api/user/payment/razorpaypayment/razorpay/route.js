@@ -251,7 +251,7 @@ export async function POST(req) {
       subtotal: serverSubtotal,
       grand_total: serverTotal,
       product_qty: cartItems.reduce((sum, item) => sum + item.quantity, 0),
-      payment_method: "stripe",
+      payment_method: "razorpay",
       payment_status: "pending",
       transaction_id: null,
       payment_approve_date: new Date(),

@@ -320,6 +320,7 @@ if (selectedProduct) {
                   />
                 </TableCell>
                 <TableCell align="right">
+                  
                   <IconButton
                     size="small"
                     onClick={(e) => handleSettingsClick(e, product)}
@@ -327,6 +328,7 @@ if (selectedProduct) {
                   >
                     <SettingsIcon fontSize="small" />
                   </IconButton>
+
                   <IconButton
                     size="small"
                     onClick={() => onEdit(product._id)}
@@ -404,6 +406,8 @@ if (selectedProduct) {
            Product Options
           </MenuItem>
       </Menu>
+
+      
     </>
   );
 };

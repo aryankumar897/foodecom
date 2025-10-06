@@ -199,27 +199,283 @@
 
 
 
-// pages/chat.js
-import React, { useState, useEffect, useRef } from 'react';
+// // pages/chat.js
+// import React, { useState, useEffect, useRef } from 'react';
+// import { Box, Typography, TextField, IconButton, List, ListItem, Avatar, Badge } from '@mui/material';
+// import SendIcon from '@mui/icons-material/Send';
+// import styles from './style';
+// //import { pusherClient } from '@/lib/pusher';
+// import { useSession } from 'next-auth/react';
+// import axios from 'axios';
+// import Pusher from "pusher-js";
+// const getUserAvatar = (user) => {
+//   return user?.avatar || 'https://i.pravatar.cc/150?img=3';
+// };
+
+
+// export const pusherClient = new Pusher(process.env.KEY, {
+//   cluster: process.env.CLUSTER,
+//   forceTLS: true,
+// });
+
+// export default function Chat() {
+//   const { data: session } = useSession();
+//   const [messages, setMessages] = useState([]);
+//   const [users, setUsers] = useState([]);
+//   const [newMessage, setNewMessage] = useState('');
+//   const [activeUser, setActiveUser] = useState(null);
+//   const [isTyping, setIsTyping] = useState(false);
+//   const messagesEndRef = useRef(null);
+
+//   const scrollToBottom = () => {
+//     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+//   };
+
+//   useEffect(() => {
+//     scrollToBottom();
+//   }, [messages]);
+
+//   // Fetch users and messages
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const usersRes = await axios.get('/api/users');
+//         const messagesRes = await axios.get('/api/chats');
+        
+//         setUsers(usersRes.data);
+//         if (usersRes.data.length > 0) {
+//           setActiveUser(usersRes.data[0]);
+//         }
+//         setMessages(messagesRes.data);
+//       } catch (err) {
+//         console.error('Error fetching data:', err);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   // Set up Pusher
+//   useEffect(() => {
+//     if (!session) return;
+
+//     const channel = pusherClient.subscribe('chat-channel');
+
+//     channel.bind('new-message', (data) => {
+//       setMessages(prev => [...prev, data.message]);
+//     });
+
+//     channel.bind('update-message', (data) => {
+//       setMessages(prev => prev.map(msg => 
+//         msg._id === data.message._id ? data.message : msg
+//       ));
+//     });
+
+//     channel.bind('delete-message', (data) => {
+//       setMessages(prev => prev.filter(msg => msg._id !== data.messageId));
+//     });
+
+//     channel.bind('typing', (data) => {
+//       if (data.userId !== session.user.id && data.receiverId === session.user.id) {
+//         setIsTyping(true);
+//         const timer = setTimeout(() => setIsTyping(false), 2000);
+//         return () => clearTimeout(timer);
+//       }
+//     });
+
+//     return () => {
+//       channel.unbind_all();
+//       channel.unsubscribe();
+//     };
+//   }, [session]);
+
+//   const handleSendMessage = async () => {
+//     if (newMessage.trim() === '' || !activeUser) return;
+
+//     try {
+//       const messageData = {
+//         sender_id: session.user.id,
+//         receiver_id: activeUser._id,
+//         message: newMessage
+//       };
+
+//       await axios.post('/api/chats', messageData);
+//       setNewMessage('');
+//     } catch (err) {
+//       console.error('Error sending message:', err);
+//     }
+//   };
+
+//   const handleKeyPress = (e) => {
+//     if (e.key === 'Enter' && !e.shiftKey) {
+//       e.preventDefault();
+//       handleSendMessage();
+//     }
+//   };
+
+//   const handleTyping = () => {
+//     if (activeUser) {
+//       pusherClient.trigger('chat-channel', 'typing', {
+//         userId: session.user.id,
+//         receiverId: activeUser._id
+//       });
+//     }
+//   };
+
+//   return (
+//     <Box sx={styles.container}>
+//       <Box sx={styles.sidebar}>
+//         <Typography variant="h6" sx={styles.title}>Chats</Typography>
+//         <List>
+//           {users.map((user) => (
+//             <ListItem 
+//               key={user._id} 
+//               sx={{
+//                 ...styles.userItem,
+//                 ...(activeUser?._id === user._id ? { '&.active': styles.userItem['&.active'] } : {})
+//               }}
+//               className={activeUser?._id === user._id ? 'active' : ''}
+//               onClick={() => setActiveUser(user)}
+//             >
+//               <Badge
+//                 overlap="circular"
+//                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+//                 badgeContent={user.online ? <Box sx={styles.onlineStatus} /> : null}
+//               >
+//                 <Avatar sx={styles.avatar} src={getUserAvatar(user)} />
+//               </Badge>
+//               <Box sx={{ flex: 1 }}>
+//                 <Typography fontWeight="600">{user.name}</Typography>
+//                 <Typography variant="caption" color={user.online ? 'success.main' : 'text.secondary'}>
+//                   {user.online ? 'Online' : 'Offline'}
+//                 </Typography>
+//               </Box>
+//             </ListItem>
+//           ))}
+//         </List>
+//       </Box>
+
+//       <Box sx={styles.chatWindow}>
+//         {activeUser ? (
+//           <>
+//             <Typography variant="h6" sx={styles.title}>
+//               Chat with {activeUser.name}
+//               {activeUser.online && (
+//                 <Typography component="span" variant="caption" color="success.main" sx={{ ml: 1 }}>
+//                   ● Online
+//                 </Typography>
+//               )}
+//             </Typography>
+            
+//             <Box sx={styles.messageList}>
+//               {messages
+//                 .filter(msg => 
+//                   (msg.sender_id === session.user.id && msg.receiver_id === activeUser._id) ||
+//                   (msg.sender_id === activeUser._id && msg.receiver_id === session.user.id)
+//                 )
+//                 .map((msg) => {
+//                   const isUser = msg.sender_id === session.user.id;
+//                   return (
+//                     <Box 
+//                       key={msg._id} 
+//                       sx={{
+//                         display: 'flex',
+//                         justifyContent: isUser ? 'flex-end' : 'flex-start',
+//                         alignItems: 'flex-end',
+//                         gap: 1,
+//                       }}
+//                     >
+//                       {!isUser && <Avatar src={getUserAvatar(activeUser)} sx={styles.avatar} />}
+//                       <Box sx={isUser ? styles.userMessage : styles.otherMessage}>
+//                         <Typography>{msg.message}</Typography>
+//                         <Typography sx={styles.messageTime}>
+//                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+//                         </Typography>
+//                       </Box>
+//                       {isUser && <Avatar src={session.user.image} sx={styles.avatar} />}
+//                     </Box>
+//                   );
+//                 })}
+              
+//               {isTyping && (
+//                 <Box sx={styles.typingIndicator}>
+//                   <Typography variant="caption" sx={{ mr: 1 }}>{activeUser.name.split(' ')[0]} is typing</Typography>
+//                   <span></span>
+//                   <span></span>
+//                   <span></span>
+//                 </Box>
+//               )}
+              
+//               <div ref={messagesEndRef} />
+//             </Box>
+            
+//             <Box sx={styles.inputBox}>
+//               <TextField
+//                 fullWidth
+//                 size="small"
+//                 placeholder="Type a message..."
+//                 value={newMessage}
+//                 onChange={(e) => {
+//                   setNewMessage(e.target.value);
+//                   handleTyping();
+//                 }}
+//                 onKeyPress={handleKeyPress}
+//                 sx={styles.inputField}
+//                 multiline
+//                 maxRows={4}
+//               />
+//               <IconButton 
+//                 color="primary" 
+//                 sx={styles.sendButton}
+//                 onClick={handleSendMessage}
+//                 disabled={!newMessage.trim()}
+//               >
+//                 <SendIcon />
+//               </IconButton>
+//             </Box>
+//           </>
+//         ) : (
+//           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+//             <Typography>Select a user to start chatting</Typography>
+//           </Box>
+//         )}
+//       </Box>
+//     </Box>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+"use client";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Typography, TextField, IconButton, List, ListItem, Avatar, Badge } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import styles from './style';
-import { pusherClient } from '@/lib/pusher';
 import { useSession } from 'next-auth/react';
-import axios from 'axios';
+import Pusher from "pusher-js";
 
 const getUserAvatar = (user) => {
-  return user?.avatar || 'https://i.pravatar.cc/150?img=3';
+  return user?.image || 'https://i.pravatar.cc/150?img=3';
 };
 
 export default function Chat() {
   const { data: session } = useSession();
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [usersWithMessages, setUsersWithMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [activeUser, setActiveUser] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState({});
+  const [pusherInstance, setPusherInstance] = useState(null);
   const messagesEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -229,71 +485,142 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  // Fetch users and messages
+  // Fetch users with messages and unread counts
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersRes = await axios.get('/api/users');
-        const messagesRes = await axios.get('/api/chats');
+        const response = await fetch(`${process.env.API}/chats/users-with-messages`);
+        if (!response.ok) throw new Error('Failed to fetch users with messages');
+        const { users, unreadCounts } = await response.json();
         
-        setUsers(usersRes.data);
-        if (usersRes.data.length > 0) {
-          setActiveUser(usersRes.data[0]);
+        setUsersWithMessages(users);
+        setUnreadCounts(unreadCounts);
+        
+        if (users.length > 0) {
+          setActiveUser(users[0]);
+          markMessagesAsRead(users[0]._id);
         }
-        setMessages(messagesRes.data);
       } catch (err) {
         console.error('Error fetching data:', err);
       }
     };
 
     fetchData();
-  }, []);
+  }, []); // Empty dependency array to run only once
 
-  // Set up Pusher
+  // Fetch messages for active user
+  useEffect(() => {
+    if (!activeUser) return;
+
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(`${process.env.API}/chats?receiver_id=${activeUser._id}`);
+        if (!response.ok) throw new Error('Failed to fetch messages');
+        const messagesData = await response.json();
+        setMessages(messagesData);
+      } catch (err) {
+        console.error('Error fetching messages:', err);
+      }
+    };
+
+    fetchMessages();
+  }, [activeUser]); // Only re-run when activeUser changes
+
+  // Set up Pusher for real-time updates
   useEffect(() => {
     if (!session) return;
 
-    const channel = pusherClient.subscribe('chat-channel');
-
-    channel.bind('new-message', (data) => {
-      setMessages(prev => [...prev, data.message]);
+    const pusher = new Pusher(process.env.KEY, {
+      cluster: process.env.CLUSTER,
+      forceTLS: true,
     });
 
-    channel.bind('update-message', (data) => {
-      setMessages(prev => prev.map(msg => 
-        msg._id === data.message._id ? data.message : msg
-      ));
-    });
+    setPusherInstance(pusher);
 
-    channel.bind('delete-message', (data) => {
-      setMessages(prev => prev.filter(msg => msg._id !== data.messageId));
-    });
+    const channel = pusher.subscribe('chat-channel');
 
-    channel.bind('typing', (data) => {
-      if (data.userId !== session.user.id && data.receiverId === session.user.id) {
-        setIsTyping(true);
-        const timer = setTimeout(() => setIsTyping(false), 2000);
-        return () => clearTimeout(timer);
+    const handleNewMessage = (data) => {
+      const { message } = data;
+      
+      if (message.sender_id === activeUser?._id || message.receiver_id === activeUser?._id) {
+        setMessages(prev => [...prev, message]);
       }
-    });
+      
+      if (message.sender_id !== session.user._id && message.receiver_id === session.user._id) {
+        setUnreadCounts(prev => ({
+          ...prev,
+          [message.sender_id]: (prev[message.sender_id] || 0) + 1
+        }));
+      }
+    };
+
+    const handleTyping = (data) => {
+      if (data.userId !== session.user._id && data.receiverId === session.user._id) {
+        setIsTyping(true);
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 2000);
+      }
+    };
+
+    channel.bind('new-message', handleNewMessage);
+    channel.bind('typing', handleTyping);
 
     return () => {
-      channel.unbind_all();
+      channel.unbind('new-message', handleNewMessage);
+      channel.unbind('typing', handleTyping);
       channel.unsubscribe();
+      pusher.disconnect();
+      clearTimeout(typingTimeoutRef.current);
     };
-  }, [session]);
+  }, [session, activeUser]); // Dependencies: session and activeUser
+
+  const markMessagesAsRead = async (userId) => {
+    try {
+      await fetch(`${process.env.API}/chats/mark-as-read`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender_id: userId,
+          receiver_id: session.user._id
+        }),
+      });
+      
+      setUnreadCounts(prev => ({
+        ...prev,
+        [userId]: 0
+      }));
+    } catch (err) {
+      console.error('Error marking messages as read:', err);
+    }
+  };
+
+  const handleUserClick = (user) => {
+    setActiveUser(user);
+    markMessagesAsRead(user._id);
+  };
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === '' || !activeUser) return;
 
     try {
       const messageData = {
-        sender_id: session.user.id,
+        sender_id: session.user._id,
         receiver_id: activeUser._id,
         message: newMessage
       };
 
-      await axios.post('/api/chats', messageData);
+      const response = await fetch(`${process.env.API}/chats`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(messageData),
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
       setNewMessage('');
     } catch (err) {
       console.error('Error sending message:', err);
@@ -307,21 +634,44 @@ export default function Chat() {
     }
   };
 
-  const handleTyping = () => {
-    if (activeUser) {
-      pusherClient.trigger('chat-channel', 'typing', {
-        userId: session.user.id,
-        receiverId: activeUser._id
-      });
-    }
+  const handleChange = (e) => {
+    setNewMessage(e.target.value);
+    debouncedTyping();
   };
+
+  const debouncedTyping = useCallback(() => {
+    if (!activeUser || !session) return;
+    
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await fetch(`${process.env.API}/typing`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: session.user._id,
+            receiverId: activeUser._id
+          }),
+        });
+
+        if (!response.ok) throw new Error('Failed to send typing notification');
+      } catch (err) {
+        console.error('Error sending typing notification:', err);
+      }
+    }, 500);
+  }, [activeUser, session]);
 
   return (
     <Box sx={styles.container}>
       <Box sx={styles.sidebar}>
         <Typography variant="h6" sx={styles.title}>Chats</Typography>
         <List>
-          {users.map((user) => (
+
+
+
+          {usersWithMessages.map((user) => (
             <ListItem 
               key={user._id} 
               sx={{
@@ -329,20 +679,34 @@ export default function Chat() {
                 ...(activeUser?._id === user._id ? { '&.active': styles.userItem['&.active'] } : {})
               }}
               className={activeUser?._id === user._id ? 'active' : ''}
-              onClick={() => setActiveUser(user)}
+              onClick={() => handleUserClick(user)}
             >
               <Badge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={user.online ? <Box sx={styles.onlineStatus} /> : null}
+                badgeContent={
+                  unreadCounts[user._id] > 0 && (
+                    <Box sx={{
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem'
+                    }}>
+                      {unreadCounts[user._id]}
+                    </Box>
+                  )
+                }
               >
                 <Avatar sx={styles.avatar} src={getUserAvatar(user)} />
               </Badge>
               <Box sx={{ flex: 1 }}>
                 <Typography fontWeight="600">{user.name}</Typography>
-                <Typography variant="caption" color={user.online ? 'success.main' : 'text.secondary'}>
-                  {user.online ? 'Online' : 'Offline'}
-                </Typography>
+                {/* Last message preview can be added here if needed */}
               </Box>
             </ListItem>
           ))}
@@ -354,21 +718,16 @@ export default function Chat() {
           <>
             <Typography variant="h6" sx={styles.title}>
               Chat with {activeUser.name}
-              {activeUser.online && (
-                <Typography component="span" variant="caption" color="success.main" sx={{ ml: 1 }}>
-                  ● Online
-                </Typography>
-              )}
             </Typography>
             
             <Box sx={styles.messageList}>
               {messages
                 .filter(msg => 
-                  (msg.sender_id === session.user.id && msg.receiver_id === activeUser._id) ||
-                  (msg.sender_id === activeUser._id && msg.receiver_id === session.user.id)
+                  (msg.sender_id === session.user._id && msg.receiver_id === activeUser._id) ||
+                  (msg.sender_id === activeUser._id && msg.receiver_id === session.user._id)
                 )
                 .map((msg) => {
-                  const isUser = msg.sender_id === session.user.id;
+                  const isUser = msg.sender_id === session.user._id;
                   return (
                     <Box 
                       key={msg._id} 
@@ -409,10 +768,7 @@ export default function Chat() {
                 size="small"
                 placeholder="Type a message..."
                 value={newMessage}
-                onChange={(e) => {
-                  setNewMessage(e.target.value);
-                  handleTyping();
-                }}
+                onChange={handleChange}
                 onKeyPress={handleKeyPress}
                 sx={styles.inputField}
                 multiline

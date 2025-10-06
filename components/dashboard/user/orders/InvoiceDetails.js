@@ -13,135 +13,132 @@ import {
   StepLabel,
 } from "@mui/material";
 
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import CancelIcon from "@mui/icons-material/Cancel";
 
-
-
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import CancelIcon from '@mui/icons-material/Cancel';
-
-
-
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 const statusSteps = [
   { value: "pending", label: "Order Pending" },
   { value: "inprocess", label: "Processing" },
-  { value: "delivered", label: "Delivered" }
+  { value: "delivered", label: "Delivered" },
 ];
 
 const OrderTimeline = ({ order }) => {
-   const orderStatus = order?.order_status?.toLowerCase();
-  const isCancelled = orderStatus === 'cancelled';
-  
+  const orderStatus = order?.order_status?.toLowerCase();
+  const isCancelled = orderStatus === "cancelled";
+
   // Find the index of the current status
-  const currentStepIndex = statusSteps.findIndex(step => step.value === orderStatus);
-  
+  const currentStepIndex = statusSteps.findIndex(
+    (step) => step.value === orderStatus
+  );
+
   // Determine if order is complete (delivered)
-  const isComplete = orderStatus === 'delivered';
+  const isComplete = orderStatus === "delivered";
 
   return (
-
-
-<>
-   
-
- <Box mb={4} sx={{ width: '100%' }}>
-      {isCancelled ? (
-        <Box display="flex" alignItems="center" gap={1}>
-          <CancelIcon sx={{ color: "#ef4444", fontSize: 30 }} />
-          <Typography variant="h6" color="#ef4444" fontWeight="bold">
-            Order Cancelled
-          </Typography>
-        </Box>
-      ) : (
-        <>
-          <Stepper alternativeLabel activeStep={currentStepIndex}>
-            {statusSteps.map((step, index) => {
-              const isCompleted = index < currentStepIndex || isComplete;
-              const isCurrent = index === currentStepIndex && !isComplete;
-
-              return (
-                <Step key={step.value} completed={isCompleted}>
-                  <StepLabel
-                    StepIconComponent={() => {
-                      if (isComplete) {
-                        return <DoneAllIcon sx={{ color: "#16a34a" }} />;
-                      }
-                      if (isCompleted) {
-                        return <CheckCircleIcon sx={{ color: "#16a34a" }} />;
-                      }
-                      if (isCurrent) {
-                        return <CheckCircleIcon sx={{ color: "#f59e0b" }} />;
-                      }
-                      return <RadioButtonUncheckedIcon sx={{ color: "#d1d5db" }} />;
-                    }}
-                  >
-                    <Typography
-                      fontSize="0.85rem"
-                      fontWeight="bold"
-                      sx={{
-                        color: isComplete ? "#16a34a" :
-                               isCompleted ? "#16a34a" :
-                               isCurrent ? "#f59e0b" : "#9ca3af"
-                      }}
-                    >
-                      {step.label}
-                      {isCurrent && (
-                        <Typography 
-                          variant="caption" 
-                          display="block" 
-                          color="#f59e0b"
-                          sx={{ mt: 0.5 }}
-                        >
-                          (Current Status)
-                        </Typography>
-                      )}
-                      {isComplete && index === statusSteps.length - 1 && (
-                        <Typography 
-                          variant="caption" 
-                          display="block" 
-                          color="#16a34a"
-                          sx={{ mt: 0.5 }}
-                        >
-                          (Completed)
-                        </Typography>
-                      )}
-                    </Typography>
-                  </StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          
-          {/* Status summary */}
-          <Box mt={2} textAlign="center">
-            <Typography 
-              variant="subtitle1" 
-              fontWeight="bold"
-              color={
-                isComplete ? "#16a34a" :
-                orderStatus === "inprocess" ? "#f59e0b" :
-                orderStatus === "pending" ? "#f59e0b" : "#9ca3af"
-              }
-            >
-              {isComplete ? "Order Completed Successfully" :
-               `Current Status: ${orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)}`}
+    <>
+      <Box mb={4} sx={{ width: "100%" }}>
+        {isCancelled ? (
+          <Box display="flex" alignItems="center" gap={1}>
+            <CancelIcon sx={{ color: "#ef4444", fontSize: 30 }} />
+            <Typography variant="h6" color="#ef4444" fontWeight="bold">
+              Order Cancelled
             </Typography>
           </Box>
-        </>
-      )}
-    </Box>
+        ) : (
+          <>
+            <Stepper alternativeLabel activeStep={currentStepIndex}>
+              {statusSteps.map((step, index) => {
+                const isCompleted = index < currentStepIndex || isComplete;
+                const isCurrent = index === currentStepIndex && !isComplete;
 
+                return (
+                  <Step key={step.value} completed={isCompleted}>
+                    <StepLabel
+                      StepIconComponent={() => {
+                        if (isComplete) {
+                          return <DoneAllIcon sx={{ color: "#16a34a" }} />;
+                        }
+                        if (isCompleted) {
+                          return <CheckCircleIcon sx={{ color: "#16a34a" }} />;
+                        }
+                        if (isCurrent) {
+                          return <CheckCircleIcon sx={{ color: "#f59e0b" }} />;
+                        }
+                        return (
+                          <RadioButtonUncheckedIcon sx={{ color: "#d1d5db" }} />
+                        );
+                      }}
+                    >
+                      <Typography
+                        fontSize="0.85rem"
+                        fontWeight="bold"
+                        sx={{
+                          color: isComplete
+                            ? "#16a34a"
+                            : isCompleted
+                            ? "#16a34a"
+                            : isCurrent
+                            ? "#f59e0b"
+                            : "#9ca3af",
+                        }}
+                      >
+                        {step.label}
+                        {isCurrent && (
+                          <Typography
+                            variant="caption"
+                            display="block"
+                            color="#f59e0b"
+                            sx={{ mt: 0.5 }}
+                          >
+                            (Current Status)
+                          </Typography>
+                        )}
+                        {isComplete && index === statusSteps.length - 1 && (
+                          <Typography
+                            variant="caption"
+                            display="block"
+                            color="#16a34a"
+                            sx={{ mt: 0.5 }}
+                          >
+                            (Completed)
+                          </Typography>
+                        )}
+                      </Typography>
+                    </StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
 
+            {/* Status summary */}
+            <Box mt={2} textAlign="center">
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                color={
+                  isComplete
+                    ? "#16a34a"
+                    : orderStatus === "inprocess"
+                    ? "#f59e0b"
+                    : orderStatus === "pending"
+                    ? "#f59e0b"
+                    : "#9ca3af"
+                }
+              >
+                {isComplete
+                  ? "Order Completed Successfully"
+                  : `Current Status: ${
+                      orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)
+                    }`}
+              </Typography>
+            </Box>
+          </>
+        )}
+      </Box>
 
-
-
-
-
-
-
-
-  {/* Invoice Content */}
+      {/* Invoice Content */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -285,23 +282,8 @@ const OrderTimeline = ({ order }) => {
           Print PDF
         </Button>
       </Box>
-
-
-</>
-
+    </>
   );
 };
 
 export default OrderTimeline;
-
-
-
-
-
-
-
-
-
-
-
-

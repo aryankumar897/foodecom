@@ -384,7 +384,6 @@ export default function NotificationPanel() {
     setOpen((prev) => !prev);
   };
 
- 
   const fetchNotifications = async () => {
     try {
       const response = await fetch(`${process.env.API}/notifications`);
@@ -455,16 +454,16 @@ export default function NotificationPanel() {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-     
-    
       {session?.user?.role === "admin" && (
-  <IconButton ref={anchorRef} onClick={toggleOpen}>
-    <Badge badgeContent={unreadCount > 0 ? unreadCount : null} color="error">
-      <NotificationsIcon sx={{ color: "red" }} />
-    </Badge>
-  </IconButton>
-)}
-
+        <IconButton ref={anchorRef} onClick={toggleOpen}>
+          <Badge
+            badgeContent={unreadCount > 0 ? unreadCount : null}
+            color="error"
+          >
+            <NotificationsIcon sx={{ color: "red" }} />
+          </Badge>
+        </IconButton>
+      )}
 
       <Popper
         open={open}

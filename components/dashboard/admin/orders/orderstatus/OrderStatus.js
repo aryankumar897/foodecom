@@ -30,6 +30,11 @@ import {
 import InvoicePrint from "./InvoicePrint";
 
 const OrderDetails = ({ order }) => {
+
+
+
+
+  
   const [paymentStatus, setPaymentStatus] = useState(order.payment_status);
   const [orderStatus, setOrderStatus] = useState(order.order_status);
   const [loading, setLoading] = useState(false);
@@ -144,6 +149,12 @@ const OrderDetails = ({ order }) => {
   const formatOptionPrice = (price) => (
     <PriceHighlight>+₹{price}</PriceHighlight>
   );
+
+
+
+
+
+
 
   return (
     <>

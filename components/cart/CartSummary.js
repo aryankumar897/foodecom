@@ -261,48 +261,6 @@ const CartSummary = ({
     }
   }, [propSelectedAddress]);
 
-  // 4. Original coupon code management
-  const handleCouponChange = (e) => {
-    const value = e.target.value;
-    if (propSetCouponCode) {
-      propSetCouponCode(value);
-    }
-    setCheckoutData((prev) => ({ ...prev, couponCode: value }));
-  };
-
-  const applyCoupon = () => {
-    if (propHandleApplyCoupon) {
-      propHandleApplyCoupon();
-    } else {
-      // Default coupon handling if no prop provided
-      const discountValue = 10; // Example 10% discount
-      const totalDiscount = (checkoutData.subtotal * discountValue) / 100;
-
-      setCheckoutData((prev) => ({
-        ...prev,
-        totalDiscount,
-        discountType: "percentage",
-        discountValue,
-        total: prev.subtotal - totalDiscount + prev.deliveryFee,
-      }));
-    }
-  };
-
-  const removeCoupon = () => {
-    if (propHandleRemoveCoupon) {
-      propHandleRemoveCoupon();
-    } else {
-      setCheckoutData((prev) => ({
-        ...prev,
-        totalDiscount: 0,
-        discountType: null,
-        discountValue: 0,
-        couponCode: "",
-        total: prev.subtotal + prev.deliveryFee,
-      }));
-    }
-  };
-
   // 5. Navigation with validation
   const handleProceed = () => {
     if ((isCheckoutPage || isPaymentPage) && !checkoutData.address) {
@@ -483,61 +441,30 @@ const CartSummary = ({
           </Box>
         )}
 
-        {/* Original Proceed Button */}
-        {/* <Button
-          variant="contained"
-          fullWidth
-          size="large"
-          onClick={handleProceed}
-          disabled={
-            checkoutData.cartItems.length === 0 ||
-            (isCheckoutPage && !checkoutData.address)
-          }
-          sx={{
-            mt: 3,
-            background: colorful.successGradient,
-            "&:hover": {
-              background: colorful.successDark,
-            },
-            "&:disabled": {
-              background: "#e0e0e0",
-            },
-          }}
-        >
-          {isPaymentPage
-            ? "Complete Payment"
-            : isCheckoutPage
-            ? "Proceed to Payment"
-            : "Proceed to Checkout"}
-        </Button> */}
-
-
-
-
-{!isPaymentPage && (
-  <Button
-    variant="contained"
-    fullWidth
-    size="large"
-    onClick={handleProceed}
-    disabled={
-      checkoutData.cartItems.length === 0 ||
-      (isCheckoutPage && !checkoutData.address)
-    }
-    sx={{
-      mt: 3,
-      background: colorful.successGradient,
-      "&:hover": {
-        background: colorful.successDark,
-      },
-      "&:disabled": {
-        background: "#e0e0e0",
-      },
-    }}
-  >
-    {isCheckoutPage ? "Proceed to Payment" : "Proceed to Checkout"}
-  </Button>
-)}
+        {!isPaymentPage && (
+          <Button
+            variant="contained"
+            fullWidth
+            size="large"
+            onClick={handleProceed}
+            disabled={
+              checkoutData.cartItems.length === 0 ||
+              (isCheckoutPage && !checkoutData.address)
+            }
+            sx={{
+              mt: 3,
+              background: colorful.successGradient,
+              "&:hover": {
+                background: colorful.successDark,
+              },
+              "&:disabled": {
+                background: "#e0e0e0",
+              },
+            }}
+          >
+            {isCheckoutPage ? "Proceed to Payment" : "Proceed to Checkout"}
+          </Button>
+        )}
       </StyledSummaryPaper>
 
       {/* Address Error Snackbar */}

@@ -10,16 +10,17 @@ import couponReducer from "@/slice/couponSlice"; // Import the coupon slice
 import deliveryAreaReducer from "@/slice/deliveryAreaSlice"; // ✅ Import delivery area slice
 import addressReducer from "@/slice/addressSlice"; // ✅ Import address slice
 import userdeliveryAreaReducer from "@/slice/userdeliveryAreaSlice";
-import reservationTime from "@/slice/reservationTimeSlice";
 
 import chefReducer from "@/slice/chefSlice"; // Import the chef slice
 import testimonialReducer from "@/slice/testimonialSlice";
 
 import bannerReducer from "@/slice/bannerSlice";
 import blogReducer from "@/slice/blogSlice"; // ✅ Import the blog slice
+import reservationTime from "@/slice/reservationTimeSlice";
 
 export const store = configureStore({
   reducer: {
+    reservationTimes: reservationTime,
     sliders: sliderReducer,
     categories: categoryReducer,
     products: productReducer,
@@ -28,7 +29,7 @@ export const store = configureStore({
     deliveryAreas: deliveryAreaReducer,
     addresses: addressReducer,
     userdeliveryAreas: userdeliveryAreaReducer,
-    reservationTimes: reservationTime,
+
     chefs: chefReducer,
     testimonials: testimonialReducer,
     banners: bannerReducer,

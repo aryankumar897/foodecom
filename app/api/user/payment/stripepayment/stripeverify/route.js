@@ -2,8 +2,6 @@ const stripeInstance = new Stripe(
   "sk_test_51K5nvYSGgs9C5RdZpIIhINkUXAcMb46wbwGbJiGGWlt2VXjXhjP6wQerucW9lc3AUDCoMZ3ArV3zLIMxCQRSI24100pNDDDSew"
 );
 
-
-
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import dbConnect from "@/utils/dbConnect";
@@ -16,9 +14,6 @@ import DeliveryArea from "@/model/deliveryArea";
 import Coupon from "@/model/coupon";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/utils/authOptions";
-
-
-
 
 export async function POST(req) {
   await dbConnect();
@@ -37,21 +32,31 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const stripesession = await stripeInstance.checkout.sessions.retrieve(sessionid, {
-      expand: ['payment_intent']
-    });
+    const stripesession = await stripeInstance.checkout.sessions.retrieve(
+      sessionid,
+      {
+        expand: ["payment_intent"],
+      }
+    );
     console.log("Stripe session:", stripesession);
 
-    if (stripesession.payment_status !== 'paid') {
+    if (stripesession.payment_status !== "paid") {
       console.log("Payment not completed ❌");
       return NextResponse.json(
-        { error: "Payment not completed" }, 
+        { error: "Payment not completed" },
         { status: 400 }
       );
     }
 
-    const { order_id, user_id, coupon_id, amount, currency } = stripesession.metadata;
-    console.log("Metadata extracted:", { order_id, user_id, coupon_id, amount, currency });
+    const { order_id, user_id, coupon_id, amount, currency } =
+      stripesession.metadata;
+    console.log("Metadata extracted:", {
+      order_id,
+      user_id,
+      coupon_id,
+      amount,
+      currency,
+    });
 
     if (user_id !== session.user._id.toString()) {
       console.log("User ID mismatch ❌");
@@ -62,26 +67,23 @@ export async function POST(req) {
     }
 
     const updateData = {
-      payment_method: stripesession.payment_method_types[0] || 'card',
-      payment_status: 'paid',
+      payment_method: stripesession.payment_method_types[0] || "card",
+      payment_status: "paid",
       transaction_id: stripesession.payment_intent?.id || stripesession.id,
       payment_approve_date: new Date(stripesession.created * 1000),
-      currency_name: currency || stripesession.currency || 'USD'
+      currency_name: currency || stripesession.currency || "USD",
     };
     console.log("Update data prepared:", updateData);
 
     let couponInfo = {};
     if (coupon_id) {
       console.log("Coupon ID found, updating coupon usage...");
-     
-     
+
       const coupon = await Coupon.findByIdAndUpdate(
         coupon_id,
         { $inc: { used_count: 1 } },
         { new: true }
       );
-
-
 
       if (coupon) {
         couponInfo = {
@@ -89,7 +91,7 @@ export async function POST(req) {
           code: coupon.code,
           discount_type: coupon.discount_type,
           discount_value: coupon.discount,
-          name: coupon.name
+          name: coupon.name,
         };
         console.log("Coupon info:", couponInfo);
       } else {
@@ -101,7 +103,7 @@ export async function POST(req) {
       order_id,
       {
         ...updateData,
-      ...(coupon_id && { coupon_info: couponInfo })
+        ...(coupon_id && { coupon_info: couponInfo }),
       },
       { new: true }
     );
@@ -109,24 +111,20 @@ export async function POST(req) {
 
     if (!updatedOrder) {
       console.log("Order not found ❌");
-      return NextResponse.json(
-        { error: "Order not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
     console.log("Order updated successfully ✅");
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       order: updatedOrder,
       paymentDetails: {
         amount: amount,
         currency: currency,
         payment_method: updateData.payment_method,
-        transaction_id: updateData.transaction_id
-      }
+        transaction_id: updateData.transaction_id,
+      },
     });
-
   } catch (err) {
     console.error("Payment verification error:", err);
     return NextResponse.json(
@@ -135,8 +133,3 @@ export async function POST(req) {
     );
   }
 }
-
-
-
-
-

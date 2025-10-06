@@ -56,11 +56,6 @@ export default function CheckoutPage() {
     setDeliveryFee(address.delivery_area_id?.delivery_fee || 0);
   };
 
-
- 
-
-
-
   return (
     <>
       <Top />
@@ -73,10 +68,7 @@ export default function CheckoutPage() {
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={9}>
-            <Address
-              onAddressSelect={handleAddressSelect}
-            
-            />
+            <Address onAddressSelect={handleAddressSelect} />
           </Grid>
 
           <Grid item md={3}>

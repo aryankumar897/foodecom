@@ -29,10 +29,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 
-
-
-import Notification from "@/components/nav/notification/NotificationPanel"
-
+import Notification from "@/components/nav/notification/NotificationPanel";
 
 const Nav = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -118,7 +115,7 @@ const Nav = () => {
           Contact
         </Button>
       </Link>
-     
+
       <Button
         sx={{ color: "black", fontSize: isSmallScreen ? "0.8rem" : "1rem" }}
         onClick={handleClick}
@@ -143,15 +140,15 @@ const Nav = () => {
           </Link>
         </MenuItem>
 
- <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleClose}>
           <Link href="/term" passHref>
-           Term
+            Term
           </Link>
         </MenuItem>
 
- <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleClose}>
           <Link href="/privacy" passHref>
-           Privacy
+            Privacy
           </Link>
         </MenuItem>
       </Menu>
@@ -291,7 +288,7 @@ const Nav = () => {
             )}
           </IconButton>
 
-       <Notification/>
+          <Notification />
 
           <Button
             variant="contained"
